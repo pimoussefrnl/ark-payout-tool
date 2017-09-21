@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Ark.Tools.Payout/packages
+/Ark.Tools.Payout/Ark.Payout.UI/bin
+/Ark.Tools.Payout/Ark.Payout.UI/obj
+/Ark.Tools.Payout/.vs/Ark.Tools.Payout/v14/.suo
+/Ark.Tools.Payout/.vs/Ark.Tools.Payout/v14/.user
