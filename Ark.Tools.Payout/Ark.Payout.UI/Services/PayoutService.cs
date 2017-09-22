@@ -37,7 +37,7 @@ namespace Ark.Payout.UI.Services
                 var voterAccount = AccountService.GetByAddress(voter.Address);
                 var amountToPayVoter = (Convert.ToInt64(voterAccount.Balance) / (double)delegateAccountTotalArkVote) * (delegateAccountTotalArkToPay);
 
-                clientsToPay.Add(new ArkClientModel(voter.Address, amountToPayVoter));
+                clientsToPay.Add(new ArkClientModel(voter.Address, amountToPayVoter, Convert.ToInt64(voterAccount.Balance)));
             }
 
             returnModel.ArkDelegateAccount = delegateAccount;

@@ -11,7 +11,7 @@ namespace Ark.Payout.UI.Models
     {
         public double ArkDelegateAccountBalance
         {
-            get { return Int32.Parse(ArkDelegateAccount.Balance); }
+            get { return Int64.Parse(ArkDelegateAccount.Balance); }
         }
         public double ArkDelegateAccountBalanceUI
         {
@@ -47,10 +47,18 @@ namespace Ark.Payout.UI.Models
             get { return AmountToBePaid / StaticProperties.ARK_DIVISOR; }
         }
 
-        public ArkClientModel(string address, double amountToBePaid)
+        public double Balance { get; set; }
+
+        public double BalanceUI
+        {
+            get { return Balance / StaticProperties.ARK_DIVISOR; }
+        }
+
+        public ArkClientModel(string address, double amountToBePaid, double balance)
         {
             this.Address = address;
             this.AmountToBePaid = amountToBePaid;
+            this.Balance = balance;
         }
     }
 }

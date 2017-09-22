@@ -66,13 +66,14 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn
-                            Width="450"
                             DisplayMemberBinding="{Binding Address, Mode=OneWay}"
                             Header="Address" />
                         <GridViewColumn
-                            Width="450"
                             DisplayMemberBinding="{Binding AmountToBePaidUI, Mode=OneWay}"
                             Header="To Be Paid" />
+                        <GridViewColumn
+                            DisplayMemberBinding="{Binding BalanceUI, Mode=OneWay}"
+                            Header="Balance" />
                     </GridView>
                 </ListView.View>
             </ListView>
