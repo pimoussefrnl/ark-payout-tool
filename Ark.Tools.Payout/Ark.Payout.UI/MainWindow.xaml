@@ -33,7 +33,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
-                <Label>Passphrase:</Label>
+                <Label>Delegate Passphrase:</Label>
                 <PasswordBox
                     x:Name="PassPhraseTextBox"
                     Margin="4,0,4,0"
