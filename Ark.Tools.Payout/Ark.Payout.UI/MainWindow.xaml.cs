@@ -53,7 +53,7 @@ namespace Ark.Payout.UI
                     }
                     else
                     {
-                        var errors = PayoutService.PayClients(arkClientsToPay, _passPhrase);
+                        var errors = PayoutService.PayClients(arkClientsToPay, _passPhrase, PaymentDescriptionTextBox.Text);
 
                         if (errors.ErrorClients.Any())
                         {
@@ -62,7 +62,9 @@ namespace Ark.Payout.UI
                         else
                         {
                             MessageBox.Show("Finished paying clients without errors.  Check log for details");
-                            GeneratePayoutListButton_Click(null, null);
+                            ArkClientsListView.ItemsSource = new List<ArkClientModel>();
+                            ArkClientsListView.Tag = null;
+                            Refresh();
                         }
                     }
                 }

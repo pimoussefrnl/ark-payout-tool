@@ -39,12 +39,18 @@
                     Margin="4,0,4,0"
                     PasswordChar="*" />
                 <Label>% Of Account Balance To Payout:</Label>
-                <TextBox 
+                <TextBox
                     x:Name="PercentPayoutTextBox"
-                    PreviewTextInput="PercentPayoutTextBox_PreviewTextInput"
-                    DataObject.Pasting="PercentPayoutTextBox_Pasting"
                     Margin="4,0,4,0"
+                    DataObject.Pasting="PercentPayoutTextBox_Pasting"
+                    PreviewTextInput="PercentPayoutTextBox_PreviewTextInput"
                     Text="100" />
+                <Label>Payment Description:</Label>
+                <TextBox
+                    x:Name="PaymentDescriptionTextBox"
+                    Margin="4,0,4,0"
+                    MaxLength="50"
+                    Text="sharkark: profit share" />
             </StackPanel>
             <Button
                 x:Name="GeneratePayoutListButton"
@@ -65,15 +71,9 @@
                 Margin="4">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn
-                            DisplayMemberBinding="{Binding Address, Mode=OneWay}"
-                            Header="Address" />
-                        <GridViewColumn
-                            DisplayMemberBinding="{Binding AmountToBePaidUI, Mode=OneWay}"
-                            Header="To Be Paid" />
-                        <GridViewColumn
-                            DisplayMemberBinding="{Binding BalanceUI, Mode=OneWay}"
-                            Header="Balance" />
+                        <GridViewColumn DisplayMemberBinding="{Binding Address, Mode=OneWay}" Header="Address" />
+                        <GridViewColumn DisplayMemberBinding="{Binding AmountToBePaidUI, Mode=OneWay}" Header="To Be Paid" />
+                        <GridViewColumn DisplayMemberBinding="{Binding BalanceUI, Mode=OneWay}" Header="Balance" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -113,11 +113,5 @@
                 FontWeight="Bold"
                 Foreground="White" />
         </Grid>
-        <!--<ProgressBar
-            x:Name="TranslationProgressBar"
-            Grid.Row="2"
-            Grid.Column="0"
-            Height="20"
-            Margin="4" />-->
     </Grid>
 </Window>

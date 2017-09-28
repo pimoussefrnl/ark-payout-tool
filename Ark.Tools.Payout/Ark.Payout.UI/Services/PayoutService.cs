@@ -45,7 +45,7 @@ namespace Ark.Payout.UI.Services
             return returnModel;
         }
 
-        public static ErrorIndexModel PayClients(List<ArkClientModel> arkClientModels, string passPhrase)
+        public static ErrorIndexModel PayClients(List<ArkClientModel> arkClientModels, string passPhrase, string paymentDescription)
         {
             var returnModel = new ErrorIndexModel();
             var accCtnrl = new AccountController(passPhrase);
@@ -55,7 +55,7 @@ namespace Ark.Payout.UI.Services
                 var voterAccount = AccountService.GetByAddress(voter.Address);
 
                 _log.Info(String.Format("Paying {0} to address {1}", (long)voter.AmountToBePaid, voter.Address));
-                var response = accCtnrl.SendArk((long)voter.AmountToBePaid, voterAccount.Address, "sharkark: profit share", passPhrase);
+                var response = accCtnrl.SendArk((long)voter.AmountToBePaid, voterAccount.Address, string.IsNullOrWhiteSpace(paymentDescription) ? string.Empty : paymentDescription, passPhrase);
 
                 if (response.Item1 == false)
                 {
