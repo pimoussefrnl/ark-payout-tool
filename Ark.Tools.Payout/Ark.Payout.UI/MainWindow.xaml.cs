@@ -86,10 +86,10 @@ namespace Ark.Payout.UI
                 return;
             }
 
-            var amount = Convert.ToInt64(AmountPayoutTextBox.Text);
-            if (amount <= 0 )
+            var amount = Double.Parse(AmountPayoutTextBox.Text);
+            if(amount/StaticProperties.ARK_DIVISOR > 1)
             {
-                MessageBox.Show("Amount must be > 0");
+                MessageBox.Show("Invalid Amount");
                 return;
             }
 
@@ -102,7 +102,7 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text), Convert.ToInt64(AmountPayoutTextBox.Text));
+                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text),Convert.ToInt64(amount*StaticProperties.ARK_DIVISOR));
                     ArkClientsListView.Tag = clientsToPay;
                     foreach (var clientToPay in clientsToPay.ArkClients)
                     {
@@ -152,19 +152,20 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse("100"), 1);
+                    clientsToPay = PayoutService.GetClientsToPay(_passPhrase, 0, 0);
                     ArkClientsListView.Tag = clientsToPay;
+
+                    AmountPayoutTextBox.Text = clientsToPay.ArkDelegateAccountBalanceUI.ToString();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(String.Format("Error generating payout list.  {0}.  Check log for additional details.", ex.Message));
-                    _log.Error("Error generating payout list", ex);
+                    MessageBox.Show(String.Format("Error loading account data.  {0}.  Check log for additional details.", ex.Message));
+                    _log.Error("Error loading account data", ex);
                 }
             }
-
             Refresh();
+            ArkClientsListView.ItemsSource = null;
             TotalArkToPayValueLabel.Content = 0;
-            AmountPayoutTextBox.Text = Convert.ToInt64(clientsToPay.ArkDelegateAccountBalanceUI).ToString();
         }
 
         private void PercentPayoutTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -225,6 +226,10 @@ namespace Ark.Payout.UI
                 TotalClientsToPayValueLabel.Content = 0;
             }
             ArkClientsListView.Items.Refresh();
+        }
+        private void ClientPayList()
+        {
+
         }
     }
 }

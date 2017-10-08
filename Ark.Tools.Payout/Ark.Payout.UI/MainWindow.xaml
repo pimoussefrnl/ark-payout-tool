@@ -34,7 +34,7 @@
 
             <StackPanel Grid.Row="0">
                 <Label>Delegate Passphrase:</Label>
-                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
                     <PasswordBox
                         x:Name="PassPhraseTextBox"
                         Margin="4,0,4,0"
@@ -47,7 +47,7 @@
                         Content="Load Account Data"
                         IsDefault="True" />
                 </StackPanel>
-                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
                     <Label>Enter % Of Account Balance To Payout:</Label>
                     <TextBox
                         x:Name="PercentPayoutTextBox"
@@ -63,7 +63,7 @@
                         MinWidth="50"
                         DataObject.Pasting="AmountPayoutTextBox_Pasting"
                         PreviewTextInput="AmountPayoutTextBox_PreviewTextInput"
-                        Text="1" />
+                        Text="0" />
                 </StackPanel>
                 <Label>Payment Description:</Label>
                 <TextBox

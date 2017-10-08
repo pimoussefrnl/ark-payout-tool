@@ -26,9 +26,9 @@ namespace Ark.Payout.UI.Services
                 throw new Exception(StaticProperties.ARK_ACCOUNT_NOT_FOUND);
 
             var delegateAccountTotalArk = Convert.ToInt64(delegateAccount.Balance);
-            if(amountToPay < delegateAccountTotalArk)
+            if(Convert.ToInt64(amountToPay) < delegateAccountTotalArk)
             {
-                delegateAccountTotalArk = Convert.ToInt64(amountToPay);
+                delegateAccountTotalArk = amountToPay;
             }
             var delegateAccountVoters = DelegateService.GetVoters(delegateAccount.PublicKey);
             var feesToPay = ArkNetApi.Instance.NetworkSettings.Fee.Send * delegateAccountVoters.Count();
