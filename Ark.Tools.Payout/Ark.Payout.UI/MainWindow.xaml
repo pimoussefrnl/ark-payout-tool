@@ -34,17 +34,37 @@
 
             <StackPanel Grid.Row="0">
                 <Label>Delegate Passphrase:</Label>
-                <PasswordBox
-                    x:Name="PassPhraseTextBox"
-                    Margin="4,0,4,0"
-                    PasswordChar="*" />
-                <Label>% Of Account Balance To Payout:</Label>
-                <TextBox
-                    x:Name="PercentPayoutTextBox"
-                    Margin="4,0,4,0"
-                    DataObject.Pasting="PercentPayoutTextBox_Pasting"
-                    PreviewTextInput="PercentPayoutTextBox_PreviewTextInput"
-                    Text="100" />
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <PasswordBox
+                        x:Name="PassPhraseTextBox"
+                        Margin="4,0,4,0"
+                        MinWidth="650"
+                        PasswordChar="*" />
+                    <Button
+                        x:Name="LoadAccountDataButton"
+                        Margin="4"
+                        Click="LoadAccountDataButton_Click"
+                        Content="Load Account Data"
+                        IsDefault="True" />
+                </StackPanel>
+                <StackPanel Grid.Row="4" Orientation="Horizontal">
+                    <Label>Enter % Of Account Balance To Payout:</Label>
+                    <TextBox
+                        x:Name="PercentPayoutTextBox"
+                        Margin="4,0,4,0"
+                        MinWidth="50"
+                        DataObject.Pasting="PercentPayoutTextBox_Pasting"
+                        PreviewTextInput="PercentPayoutTextBox_PreviewTextInput"
+                        Text="100" />
+                    <Label>Enter Amount of Account Balance To Payout:</Label>
+                    <TextBox
+                        x:Name="AmountPayoutTextBox"
+                        Margin="4,0,4,0"
+                        MinWidth="50"
+                        DataObject.Pasting="AmountPayoutTextBox_Pasting"
+                        PreviewTextInput="AmountPayoutTextBox_PreviewTextInput"
+                        Text="1" />
+                </StackPanel>
                 <Label>Payment Description:</Label>
                 <TextBox
                     x:Name="PaymentDescriptionTextBox"

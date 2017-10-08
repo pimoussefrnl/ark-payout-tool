@@ -16,7 +16,7 @@ namespace Ark.Payout.UI.Services
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(PayoutService));
 
-        public static ArkClientIndexModel GetClientsToPay(string passPhrase, double percentToPay)
+        public static ArkClientIndexModel GetClientsToPay(string passPhrase, double percentToPay, Int64 amountToPay)
         {
             var returnModel = new ArkClientIndexModel();
 
@@ -26,6 +26,10 @@ namespace Ark.Payout.UI.Services
                 throw new Exception(StaticProperties.ARK_ACCOUNT_NOT_FOUND);
 
             var delegateAccountTotalArk = Convert.ToInt64(delegateAccount.Balance);
+            if(amountToPay < delegateAccountTotalArk)
+            {
+                delegateAccountTotalArk = Convert.ToInt64(amountToPay);
+            }
             var delegateAccountVoters = DelegateService.GetVoters(delegateAccount.PublicKey);
             var feesToPay = ArkNetApi.Instance.NetworkSettings.Fee.Send * delegateAccountVoters.Count();
             var delegateAccountTotalArkToPay = (percentToPay / 100) * (delegateAccountTotalArk - feesToPay);

@@ -86,6 +86,13 @@ namespace Ark.Payout.UI
                 return;
             }
 
+            var amount = Convert.ToInt64(AmountPayoutTextBox.Text);
+            if (amount <= 0 )
+            {
+                MessageBox.Show("Amount must be > 0");
+                return;
+            }
+
             using (new WaitCursor())
             {
                 _passPhrase = PassPhraseTextBox.Password;
@@ -95,7 +102,7 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text));
+                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text), Convert.ToInt64(AmountPayoutTextBox.Text));
                     ArkClientsListView.Tag = clientsToPay;
                     foreach (var clientToPay in clientsToPay.ArkClients)
                     {
@@ -127,6 +134,38 @@ namespace Ark.Payout.UI
                 Refresh();
             }
         }
+        private void LoadAccountDataButton_Click(object sender, RoutedEventArgs e)
+        {
+            ArkClientIndexModel clientsToPay = null;
+
+            if (String.IsNullOrWhiteSpace(PassPhraseTextBox.Password))
+            {
+                MessageBox.Show("You must enter a passphrase");
+                return;
+            }
+
+            using (new WaitCursor())
+            {
+                _passPhrase = PassPhraseTextBox.Password;
+
+                ArkClientsListView.Tag = null;
+
+                try
+                {
+                    clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse("100"), 1);
+                    ArkClientsListView.Tag = clientsToPay;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(String.Format("Error generating payout list.  {0}.  Check log for additional details.", ex.Message));
+                    _log.Error("Error generating payout list", ex);
+                }
+            }
+
+            Refresh();
+            TotalArkToPayValueLabel.Content = 0;
+            AmountPayoutTextBox.Text = Convert.ToInt64(clientsToPay.ArkDelegateAccountBalanceUI).ToString();
+        }
 
         private void PercentPayoutTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
@@ -148,7 +187,26 @@ namespace Ark.Payout.UI
                 e.CancelCommand();
             }
         }
+        private void AmountPayoutTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String text = (String)e.DataObject.GetData(typeof(String));
+                if (!StaticMethods.IsTextAllowed(text))
+                {
+                    e.CancelCommand();
+                }
+            }
+            else
+            {
+                e.CancelCommand();
+            }
+        }
 
+        private void AmountPayoutTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !StaticMethods.IsTextAllowed(e.Text);
+        }
         private void Refresh()
         {
             var clientsToPay = ArkClientsListView.Tag as ArkClientIndexModel;
