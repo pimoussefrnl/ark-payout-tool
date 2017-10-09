@@ -2,6 +2,7 @@
 using Ark.Payout.UI.Models;
 using ArkNet;
 using ArkNet.Controller;
+using ArkNet.Model;
 using ArkNet.Service;
 using log4net;
 using System;
@@ -20,8 +21,7 @@ namespace Ark.Payout.UI.Services
         {
             var returnModel = new ArkClientIndexModel();
 
-            var accCtnrl = new AccountController(passPhrase);
-            var delegateAccount = AccountService.GetByAddress(accCtnrl.GetArkAccount().Address);
+            var delegateAccount = GetAccount(passPhrase);
             if (delegateAccount.Address == StaticProperties.ARK_ACCOUNT_NOT_FOUND)
                 throw new Exception(StaticProperties.ARK_ACCOUNT_NOT_FOUND);
 
@@ -73,6 +73,12 @@ namespace Ark.Payout.UI.Services
             }
 
             return returnModel;
+        }
+
+        public static ArkAccount GetAccount(string passPhrase)
+        {
+            var accCtnrl = new AccountController(passPhrase);
+            return AccountService.GetByAddress(accCtnrl.GetArkAccount().Address);
         }
     }
 }

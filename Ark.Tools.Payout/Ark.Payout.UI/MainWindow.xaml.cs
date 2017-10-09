@@ -87,7 +87,7 @@ namespace Ark.Payout.UI
             }
 
             var amount = Double.Parse(AmountPayoutTextBox.Text);
-            if(amount/StaticProperties.ARK_DIVISOR > 1)
+            if (amount / StaticProperties.ARK_DIVISOR > 1)
             {
                 MessageBox.Show("Invalid Amount");
                 return;
@@ -102,7 +102,7 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text),Convert.ToInt64(amount*StaticProperties.ARK_DIVISOR));
+                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text), Convert.ToInt64(amount * StaticProperties.ARK_DIVISOR));
                     ArkClientsListView.Tag = clientsToPay;
                     foreach (var clientToPay in clientsToPay.ArkClients)
                     {
@@ -136,7 +136,7 @@ namespace Ark.Payout.UI
         }
         private void LoadAccountDataButton_Click(object sender, RoutedEventArgs e)
         {
-            ArkClientIndexModel clientsToPay = null;
+            GridPayout.IsEnabled = false;
 
             if (String.IsNullOrWhiteSpace(PassPhraseTextBox.Password))
             {
@@ -148,14 +148,14 @@ namespace Ark.Payout.UI
             {
                 _passPhrase = PassPhraseTextBox.Password;
 
+                ArkClientsListView.ItemsSource = new List<ArkClientModel>();
                 ArkClientsListView.Tag = null;
 
                 try
                 {
-                    clientsToPay = PayoutService.GetClientsToPay(_passPhrase, 0, 0);
-                    ArkClientsListView.Tag = clientsToPay;
-
-                    AmountPayoutTextBox.Text = clientsToPay.ArkDelegateAccountBalanceUI.ToString();
+                    var account = PayoutService.GetAccount(_passPhrase);
+                    AmountPayoutTextBox.Text = (Double.Parse(account.Balance) / StaticProperties.ARK_DIVISOR).ToString();
+                    GridPayout.IsEnabled = true;
                 }
                 catch (Exception ex)
                 {
@@ -164,31 +164,14 @@ namespace Ark.Payout.UI
                 }
             }
             Refresh();
-            ArkClientsListView.ItemsSource = null;
-            TotalArkToPayValueLabel.Content = 0;
         }
 
-        private void PercentPayoutTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             e.Handled = !StaticMethods.IsTextAllowed(e.Text);
         }
 
-        private void PercentPayoutTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            if (e.DataObject.GetDataPresent(typeof(String)))
-            {
-                String text = (String)e.DataObject.GetData(typeof(String));
-                if (!StaticMethods.IsTextAllowed(text))
-                {
-                    e.CancelCommand();
-                }
-            }
-            else
-            {
-                e.CancelCommand();
-            }
-        }
-        private void AmountPayoutTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        private void TextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(typeof(String)))
             {
@@ -204,10 +187,6 @@ namespace Ark.Payout.UI
             }
         }
 
-        private void AmountPayoutTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            e.Handled = !StaticMethods.IsTextAllowed(e.Text);
-        }
         private void Refresh()
         {
             var clientsToPay = ArkClientsListView.Tag as ArkClientIndexModel;

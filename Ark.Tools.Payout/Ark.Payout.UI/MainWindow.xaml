@@ -19,11 +19,39 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="0">
+            <StackPanel>
+                <Label>Delegate Passphrase:</Label>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.8*" />
+                        <ColumnDefinition Width="0.2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26" />
+                    </Grid.RowDefinitions>
+                    <PasswordBox
+                        x:Name="PassPhraseTextBox"
+                        Grid.Column="0"
+                        Margin="4,0,0,0"
+                        VerticalContentAlignment="Center"
+                        PasswordChar="*" />
+                    <Button
+                        x:Name="LoadAccountDataButton"
+                        Grid.Column="1"
+                        Margin="4,0,4,0"
+                        Click="LoadAccountDataButton_Click"
+                        Content="Load Account Data"
+                        IsDefault="True" />
+                </Grid>
+            </StackPanel>
+        </Grid>
+        <Grid
+            x:Name="GridPayout"
+            Grid.Row="1"
+            IsEnabled="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -33,61 +61,66 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
-                <Label>Delegate Passphrase:</Label>
-                <StackPanel Orientation="Horizontal">
-                    <PasswordBox
-                        x:Name="PassPhraseTextBox"
-                        Margin="4,0,4,0"
-                        MinWidth="650"
-                        PasswordChar="*" />
-                    <Button
-                        x:Name="LoadAccountDataButton"
-                        Margin="4"
-                        Click="LoadAccountDataButton_Click"
-                        Content="Load Account Data"
-                        IsDefault="True" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label>Enter % Of Account Balance To Payout:</Label>
+                <Label>Payout (% of Balance):</Label>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.05*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="0.95*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26" />
+                    </Grid.RowDefinitions>
                     <TextBox
                         x:Name="PercentPayoutTextBox"
-                        Margin="4,0,4,0"
-                        MinWidth="50"
-                        DataObject.Pasting="PercentPayoutTextBox_Pasting"
-                        PreviewTextInput="PercentPayoutTextBox_PreviewTextInput"
+                        Grid.Column="0"
+                        Margin="4,0,0,0"
+                        VerticalContentAlignment="Center"
+                        DataObject.Pasting="TextBox_Pasting"
+                        PreviewTextInput="TextBox_PreviewTextInput"
                         Text="100" />
-                    <Label>Enter Amount of Account Balance To Payout:</Label>
+                    <Label
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        % of
+                    </Label>
                     <TextBox
                         x:Name="AmountPayoutTextBox"
+                        Grid.Column="2"
                         Margin="4,0,4,0"
-                        MinWidth="50"
-                        DataObject.Pasting="AmountPayoutTextBox_Pasting"
-                        PreviewTextInput="AmountPayoutTextBox_PreviewTextInput"
+                        VerticalContentAlignment="Center"
+                        DataObject.Pasting="TextBox_Pasting"
+                        PreviewTextInput="TextBox_PreviewTextInput"
                         Text="0" />
-                </StackPanel>
+                </Grid>
                 <Label>Payment Description:</Label>
                 <TextBox
                     x:Name="PaymentDescriptionTextBox"
+                    Height="26"
                     Margin="4,0,4,0"
+                    VerticalContentAlignment="Center"
                     MaxLength="50"
                     Text="sharkark: profit share" />
             </StackPanel>
             <Button
                 x:Name="GeneratePayoutListButton"
-                Grid.Row="2"
+                Grid.Row="1"
+                Height="26"
                 Margin="4"
                 Click="GeneratePayoutListButton_Click"
                 Content="Generate Payout"
                 IsDefault="True" />
             <Button
                 x:Name="RemoveButton"
-                Grid.Row="3"
+                Grid.Row="2"
+                Height="26"
                 Margin="4"
                 Click="RemoveButton_Click"
                 Content="Remove Selected" />
             <ListView
                 x:Name="ArkClientsListView"
-                Grid.Row="4"
+                Grid.Row="3"
                 Margin="4">
                 <ListView.View>
                     <GridView>
@@ -97,7 +130,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <StackPanel Grid.Row="4" Orientation="Horizontal">
                 <Label
                     Name="TotalArkToPayLabel"
                     Content="Amount To Pay (Fees Included):"
@@ -124,7 +157,7 @@
             </StackPanel>
             <Button
                 x:Name="PayNowButton"
-                Grid.Row="6"
+                Grid.Row="5"
                 Margin="4"
                 Padding="4"
                 Background="Green"
