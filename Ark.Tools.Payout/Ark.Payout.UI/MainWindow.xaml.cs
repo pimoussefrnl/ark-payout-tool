@@ -53,6 +53,11 @@ namespace Ark.Payout.UI
                     }
                     else
                     {
+                        foreach(var clientToPay in arkClientsToPay)
+                        {
+                            _log.Info(String.Format("Attempting to pay {0}({1}) to address {2}", (clientToPay.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)clientToPay.AmountToBePaid, clientToPay.Address));
+                        }
+
                         var errors = PayoutService.PayClients(arkClientsToPay, _passPhrase, PaymentDescriptionTextBox.Text);
 
                         if (errors.ErrorClients.Any())

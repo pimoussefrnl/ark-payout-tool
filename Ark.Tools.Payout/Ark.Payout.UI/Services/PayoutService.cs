@@ -17,7 +17,7 @@ namespace Ark.Payout.UI.Services
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(PayoutService));
 
-        public static ArkClientIndexModel GetClientsToPay(string passPhrase, double percentToPay, Int64 amountToPay)
+        public static ArkClientIndexModel GetClientsToPay(string passPhrase, double percentToPay, long amountToPay)
         {
             var returnModel = new ArkClientIndexModel();
 
@@ -26,7 +26,7 @@ namespace Ark.Payout.UI.Services
                 throw new Exception(StaticProperties.ARK_ACCOUNT_NOT_FOUND);
 
             var delegateAccountTotalArk = Convert.ToInt64(delegateAccount.Balance);
-            if(Convert.ToInt64(amountToPay) < delegateAccountTotalArk)
+            if (Convert.ToInt64(amountToPay) < delegateAccountTotalArk)
             {
                 delegateAccountTotalArk = amountToPay;
             }
@@ -58,17 +58,17 @@ namespace Ark.Payout.UI.Services
             {
                 var voterAccount = AccountService.GetByAddress(voter.Address);
 
-                _log.Info(String.Format("Paying {0} to address {1}", (long)voter.AmountToBePaid, voter.Address));
+                _log.Info(String.Format("Paying {0}({1}) to address {2}", (voter.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)voter.AmountToBePaid, voter.Address));
                 var response = accCtnrl.SendArk((long)voter.AmountToBePaid, voterAccount.Address, string.IsNullOrWhiteSpace(paymentDescription) ? string.Empty : paymentDescription, passPhrase);
 
                 if (response.Item1 == false)
                 {
-                    _log.Error(String.Format("Error paying {0} to address {1}", (long)voter.AmountToBePaid, voter.Address));
+                    _log.Error(String.Format("Error paying {0}({1}) to address {2}", (voter.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)voter.AmountToBePaid, voter.Address));
                     returnModel.ErrorClients.Add(new ErrorModel(voter.Address, (long)voter.AmountToBePaid, response.Item3));
                 }
                 else
                 {
-                    _log.Info(String.Format("Finished paying {0} to addres {1}", (long)voter.AmountToBePaid, voter.Address));
+                    _log.Info(String.Format("Finished paying {0}({1}) to addres {2}", (voter.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)voter.AmountToBePaid, voter.Address));
                 }
             }
 
