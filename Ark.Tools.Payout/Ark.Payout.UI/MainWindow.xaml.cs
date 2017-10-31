@@ -4,13 +4,13 @@ using Ark.Payout.UI.Services;
 using ArkNet;
 using ArkNet.Utils;
 using ArkNet.Utils.Enum;
-using JsonConfig;
 using log4net;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ark.Payout.UI
 {
@@ -20,16 +20,13 @@ namespace Ark.Payout.UI
     public partial class MainWindow : Window
     {
         private string _passPhrase = null;
+        private bool _arkNetLoaded = false;
 
         private static readonly ILog _log = LogManager.GetLogger(typeof(MainWindow));
 
         public MainWindow()
         {
             InitializeComponent();
-
-            //Create instance and change network settings to the settings in the settings.conf file
-            ArkNetApi.Instance.Start(NetworkType.MainNet);
-            ArkNetApi.Instance.NetworkSettings = new ArkNetworkSettings(Config.User.MainNet);
 
             ArkClientsListView.ItemsSource = new List<ArkClientModel>();
         }
@@ -39,7 +36,7 @@ namespace Ark.Payout.UI
             base.OnClosed(e);
         }
 
-        private void PayNowButton_Click(object sender, RoutedEventArgs e)
+        private async void PayNowButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show("Are you sure?", "Pay Confirmation", MessageBoxButton.YesNo);
             if (messageBoxResult == MessageBoxResult.Yes)
@@ -58,7 +55,7 @@ namespace Ark.Payout.UI
                             _log.Info(String.Format("Attempting to pay {0}({1}) to address {2}", (clientToPay.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)clientToPay.AmountToBePaid, clientToPay.Address));
                         }
 
-                        var errors = PayoutService.PayClients(arkClientsToPay, _passPhrase, PaymentDescriptionTextBox.Text);
+                        var errors = await PayoutService.PayClients(arkClientsToPay, _passPhrase, PaymentDescriptionTextBox.Text);
 
                         if (errors.ErrorClients.Any())
                         {
@@ -76,7 +73,7 @@ namespace Ark.Payout.UI
             }
         }
 
-        private void GeneratePayoutListButton_Click(object sender, RoutedEventArgs e)
+        private async void GeneratePayoutListButton_Click(object sender, RoutedEventArgs e)
         {
             if (String.IsNullOrWhiteSpace(PassPhraseTextBox.Password))
             {
@@ -107,7 +104,7 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    var clientsToPay = PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text), Convert.ToInt64(amount * StaticProperties.ARK_DIVISOR));
+                    var clientsToPay = await PayoutService.GetClientsToPay(_passPhrase, Double.Parse(PercentPayoutTextBox.Text), Convert.ToInt64(amount * StaticProperties.ARK_DIVISOR));
                     ArkClientsListView.Tag = clientsToPay;
                     foreach (var clientToPay in clientsToPay.ArkClients)
                     {
@@ -139,8 +136,13 @@ namespace Ark.Payout.UI
                 Refresh();
             }
         }
-        private void LoadAccountDataButton_Click(object sender, RoutedEventArgs e)
+        private async void LoadAccountDataButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_arkNetLoaded)
+                await ArkNetApi.Instance.Start(NetworkType.MainNet);
+
+            _arkNetLoaded = true;
+
             GridPayout.IsEnabled = false;
 
             if (String.IsNullOrWhiteSpace(PassPhraseTextBox.Password))
@@ -158,8 +160,8 @@ namespace Ark.Payout.UI
 
                 try
                 {
-                    var account = PayoutService.GetAccount(_passPhrase);
-                    AmountPayoutTextBox.Text = (Double.Parse(account.Balance) / StaticProperties.ARK_DIVISOR).ToString();
+                    var account = await PayoutService.GetAccount(_passPhrase);
+                    AmountPayoutTextBox.Text = (Double.Parse(account.Balance.ToString()) / StaticProperties.ARK_DIVISOR).ToString();
                     GridPayout.IsEnabled = true;
                 }
                 catch (Exception ex)

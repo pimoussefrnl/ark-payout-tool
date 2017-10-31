@@ -1,6 +1,7 @@
 ﻿using Ark.Payout.UI.Helpers;
 using ArkNet;
 using ArkNet.Model;
+using ArkNet.Model.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Ark.Payout.UI.Models
     {
         public double ArkDelegateAccountBalance
         {
-            get { return Int64.Parse(ArkDelegateAccount.Balance); }
+            get { return ArkDelegateAccount.Balance; }
         }
         public double ArkDelegateAccountBalanceUI
         {
