@@ -50,6 +50,11 @@ namespace Ark.Payout.UI.Services
             return returnModel;
         }
 
+        public static async Task<ErrorIndexModel> PayClient(ArkClientModel arkClientModel, string passPhrase, string paymentDescription)
+        {
+            return await PayClients(new List<ArkClientModel> { arkClientModel }, passPhrase, paymentDescription);
+        }
+
         public static async Task<ErrorIndexModel> PayClients(List<ArkClientModel> arkClientModels, string passPhrase, string paymentDescription)
         {
             var returnModel = new ErrorIndexModel();

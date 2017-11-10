@@ -50,14 +50,16 @@ namespace Ark.Payout.UI
                     }
                     else
                     {
-                        foreach(var clientToPay in arkClientsToPay)
+                        var payClientTasks = new List<Task<ErrorIndexModel>>();
+                        foreach (var clientToPay in arkClientsToPay)
                         {
                             _log.Info(String.Format("Attempting to pay {0}({1}) to address {2}", (clientToPay.AmountToBePaid / StaticProperties.ARK_DIVISOR), (long)clientToPay.AmountToBePaid, clientToPay.Address));
+                            payClientTasks.Add(PayoutService.PayClient(clientToPay, _passPhrase, PaymentDescriptionTextBox.Text));
                         }
 
-                        var errors = await PayoutService.PayClients(arkClientsToPay, _passPhrase, PaymentDescriptionTextBox.Text);
+                        var errors = await Task.WhenAll(payClientTasks);
 
-                        if (errors.ErrorClients.Any())
+                        if (errors.SelectMany(x => x.ErrorClients).Any())
                         {
                             MessageBox.Show("Error paying some clients.  Check log for details");
                         }
@@ -141,6 +143,8 @@ namespace Ark.Payout.UI
             if (!_arkNetLoaded)
                 await ArkNetApi.Instance.Start(NetworkType.MainNet);
 
+            ArkNetApi.Instance.NetworkSettings.MaxNumOfBroadcasts = 10;
+
             _arkNetLoaded = true;
 
             GridPayout.IsEnabled = false;
@@ -212,10 +216,6 @@ namespace Ark.Payout.UI
                 TotalClientsToPayValueLabel.Content = 0;
             }
             ArkClientsListView.Items.Refresh();
-        }
-        private void ClientPayList()
-        {
-
         }
     }
 }
