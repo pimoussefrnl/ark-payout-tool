@@ -84,7 +84,10 @@ namespace Ark.Payout.UI.Services
         public static async Task<ArkAccount> GetAccount(string passPhrase)
         {
             var accCtnrl = new AccountController(passPhrase);
-            return await accCtnrl.GetArkAccountAsync();
+            var account = await accCtnrl.GetArkAccountAsync();
+            if (account == null)
+                throw new Exception(StaticProperties.ARK_ACCOUNT_NOT_FOUND);
+            return account;
         }
     }
 }
